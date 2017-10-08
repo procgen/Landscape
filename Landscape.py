@@ -31,13 +31,29 @@ def getColor(height):
 screen.fill((0, 0, 0))
 perlin = Perlin.Perlin(350)
 y = 0
+
+CHUNK_SIZE = 100
+
+surfaces = {}
+
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT: sys.exit()
-	if y <= height:
-		for x in range(width):
-			heightValue = perlin.octave(x, y, 3, 0.5)
-			screen.set_at((x, y), getColor(heightValue))
-		y += 1
+
+	chunkGenerated = False
+	for x in range(6):
+		for y in range(6):
+			if (x, y) in surfaces:
+				screen.blit(surfaces[x,y], (CHUNK_SIZE * x, CHUNK_SIZE * y))
+			else:
+				chunkGenerated = True
+				surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
+				for i in range(CHUNK_SIZE):
+					for j in range(CHUNK_SIZE):
+						surface.set_at((i, j), getColor(perlin.octave(i + x * CHUNK_SIZE, j + y * CHUNK_SIZE, 3, 0.5)))
+				surfaces[x, y] = surface
+				break
+		if chunkGenerated:
+			break
 
 	pygame.display.flip()
