@@ -1,4 +1,4 @@
-import sys, pygame, Perlin
+import sys, pygame, Perlin, math
 pygame.init()
 
 size = width, height = 800, 800
@@ -29,6 +29,9 @@ def getColor(height):
 		return (230,232,227)
 
 screen.fill((0, 0, 0))
+screenX = 0
+screenY = 0
+
 perlin = Perlin.Perlin(350)
 y = 0
 
@@ -40,11 +43,23 @@ while True:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT: sys.exit()
 
+	inKeys = pygame.key.get_pressed()
+
+	if inKeys[pygame.K_RIGHT]:
+		screenX += 1
+	if inKeys[pygame.K_LEFT]:
+		screenX -= 1
+	if inKeys[pygame.K_UP]:
+		screenY += 1
+	if inKeys[pygame.K_DOWN]:
+		screenY -= 1
+
 	chunkGenerated = False
-	for x in range(6):
-		for y in range(6):
+	screen.fill((0, 0, 0))
+	for x in range(width // CHUNK_SIZE):
+		for y in range(height // CHUNK_SIZE):
 			if (x, y) in surfaces:
-				screen.blit(surfaces[x,y], (CHUNK_SIZE * x, CHUNK_SIZE * y))
+				screen.blit(surfaces[x,y], (CHUNK_SIZE * x - screenX, CHUNK_SIZE * y + screenY))
 			else:
 				chunkGenerated = True
 				surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
