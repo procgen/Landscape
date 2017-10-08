@@ -50,25 +50,22 @@ while True:
 	if inKeys[pygame.K_LEFT]:
 		screenX -= 1
 	if inKeys[pygame.K_UP]:
-		screenY += 1
-	if inKeys[pygame.K_DOWN]:
 		screenY -= 1
+	if inKeys[pygame.K_DOWN]:
+		screenY += 1
 
 	chunkGenerated = False
 	screen.fill((0, 0, 0))
-	for x in range(width // CHUNK_SIZE):
-		for y in range(height // CHUNK_SIZE):
+	for x in range(screenX // CHUNK_SIZE, (width + screenX) // CHUNK_SIZE + 1):
+		for y in range(screenY // CHUNK_SIZE, (height + screenY) // CHUNK_SIZE + 1):
 			if (x, y) in surfaces:
-				screen.blit(surfaces[x,y], (CHUNK_SIZE * x - screenX, CHUNK_SIZE * y + screenY))
-			else:
+				screen.blit(surfaces[x,y], (CHUNK_SIZE * x - screenX, CHUNK_SIZE * y - screenY))
+			elif not chunkGenerated:
 				chunkGenerated = True
 				surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
 				for i in range(CHUNK_SIZE):
 					for j in range(CHUNK_SIZE):
 						surface.set_at((i, j), getColor(perlin.octave(i + x * CHUNK_SIZE, j + y * CHUNK_SIZE, 3, 0.5)))
 				surfaces[x, y] = surface
-				break
-		if chunkGenerated:
-			break
 
 	pygame.display.flip()
