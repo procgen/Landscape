@@ -1,4 +1,7 @@
 import sys, pygame, Perlin, math, threading
+import pygame.surfarray as surfarray
+import time
+import numpy
 pygame.init()
 
 size = width, height = 800, 800
@@ -39,13 +42,18 @@ def getColor(height):
 		return (230,232,227)
 
 def genChunk(x, y):
-	surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
+	#surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
+	pixels = numpy.zeros((CHUNK_SIZE, CHUNK_SIZE))
 	for i in range(CHUNK_SIZE // PIXEL_SIZE):
 		for j in range(CHUNK_SIZE // PIXEL_SIZE):
 			color = getColor(perlin.octave(i * PIXEL_SIZE + x * CHUNK_SIZE, j * PIXEL_SIZE + y * CHUNK_SIZE, 3, 0.5))
+			colorInt = (color[0] << 16) + (color[1] << 8) + (color[2])
 			for xOffset in range(PIXEL_SIZE):
 				for yOffset in range(PIXEL_SIZE):
-					surface.set_at((i * PIXEL_SIZE + xOffset, j * PIXEL_SIZE + yOffset), color)
+					pixels[i * PIXEL_SIZE + xOffset, j * PIXEL_SIZE + yOffset] = colorInt
+					#surface.set_at((i * PIXEL_SIZE + xOffset, j * PIXEL_SIZE + yOffset), color)
+	surface = pygame.Surface((128, 128))
+	surfarray.blit_array(surface, pixels)
 	return surface
 
 #endless loop that handles generating chunks in the chunk queue
