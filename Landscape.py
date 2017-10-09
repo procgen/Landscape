@@ -13,7 +13,7 @@ screen = pygame.display.set_mode(size)
 CHUNK_SIZE = 128
 PIXEL_SIZE = 4
 EXITING = False
-MOVE_SPEED = 5
+MOVE_SPEED = 0.4
 
 surfaces = {}
 chunkQueue = []
@@ -93,7 +93,7 @@ chunkThread.start()
 clock = pygame.time.Clock()
 
 while True:
-	clock.tick(60)
+	dt = clock.tick(60)
 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT: 
@@ -106,13 +106,13 @@ while True:
 		cleanup()
 		break
 	if inKeys[pygame.K_RIGHT]:
-		screenX += MOVE_SPEED
+		screenX += math.floor(MOVE_SPEED * dt)
 	if inKeys[pygame.K_LEFT]:
-		screenX -= MOVE_SPEED
+		screenX -= math.floor(MOVE_SPEED * dt)
 	if inKeys[pygame.K_UP]:
-		screenY -= MOVE_SPEED
+		screenY -= math.floor(MOVE_SPEED * dt)
 	if inKeys[pygame.K_DOWN]:
-		screenY += MOVE_SPEED
+		screenY += math.floor(MOVE_SPEED * dt)
 
 	chunkGenerated = False
 	screen.fill((0, 0, 0))
