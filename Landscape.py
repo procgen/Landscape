@@ -21,7 +21,8 @@ chunkCond = threading.Condition()
 chunkLock = threading.Lock()
 
 def getColor(x, y):
-	height = perlin.octave(x, y, 3, 0.5)
+	height = heightMap.octave(x, y, 3, 0.5)
+
 	if height <= 0.20:
 		return (105,210,231)
 	if height <= 0.34:
@@ -85,7 +86,8 @@ screen.fill((0, 0, 0))
 screenX = 0
 screenY = 0
 
-perlin = Perlin.Perlin(350)
+heightMap = Perlin.Perlin(350)
+humidityMap = Perlin.Perlin(500)
 y = 0
 
 chunkThread = threading.Thread(target=chunkThread)
