@@ -15,6 +15,25 @@ PIXEL_SIZE = 8
 EXITING = False
 MOVE_SPEED = 0.4
 
+#COLORS
+C_DEEP_WATER = (105,210,231)
+C_SHALLOW_WATER = (167,219,216)
+C_BEACH = (224,228,204)
+C_LIGHT_GRASS = (186,219,129)
+C_DARK_GRASS = (124,197,130)
+C_DARK_MOUNTAIN = (62,175,131)
+C_GREY_MOUNTAIN = (143,154,156)
+C_LIGHT_MOUNTAIN = (190,195,188)
+C_SNOW = (215,218,207)
+
+C_DEEP_SAND = (221,207,161)
+C_UGLY_SAND = (236,217,153)
+C_SAND = (252,225,139)
+C_HARD_SAND = (255,207,136)
+C_MOUNTAIN_SAND = (255,178,135)
+C_DRY_MOUNTAIN = (225, 131, 57)
+C_DESERT_PEAK = (182, 87, 29)
+
 surfaces = {}
 chunkQueue = []
 chunkCond = threading.Condition()
@@ -26,42 +45,42 @@ def getColor(x, y):
 
 	if humidity >= 0.5:
 		if height <= 0.20:
-			return (105,210,231) #Deep Water
+			return C_DEEP_WATER
 		if height <= 0.34:
-			return (167,219,216) #Shallow Water
+			return C_SHALLOW_WATER
 		if height <= 0.37:
-			return (224,228,204) #Sand
+			return C_BEACH
 		if height <= 0.4:
-			return (186,219,129) #Light Grass
+			return C_LIGHT_GRASS
 		if height <= 0.6:
-			return (124,197,130) #Dark Grass
+			return C_DARK_GRASS
 		if height <= 0.68:
-			return (62,175,131) #Darker Grey
+			return C_DARK_MOUNTAIN
 		if height <= 0.75:
-			return (143,154,156) #Lighter Grey
+			return C_GREY_MOUNTAIN
 		if height <= 0.8:
-			return (190,195,188) #Even Lighter Grey
+			return C_LIGHT_MOUNTAIN
 		if height <= 0.85:
-			return (215,218,207) #Snow
+			return C_SNOW
 		else:
-			return (230,232,227)
+			return (0,0,0)
 	else:
 		if height <= 0.34:
-			return (221,207,161) #Ugly Sand
+			return C_DEEP_SAND #Ugly Sand
 		if height <= 0.37:
-			return (236,217,153) #Prettier Sand
+			return C_UGLY_SAND #Prettier Sand
 		if height <= 0.55:
-			return (252,225,139) #Nice Sand
+			return C_SAND #Nice Sand
 		if height <= 0.68:
-			return (255,207,136) #Hard Sand
+			return C_HARD_SAND #Hard Sand
 		if height <= 0.75:
-			return (255,178,135) #Mountainy Sand
+			return C_MOUNTAIN_SAND #Mountainy Sand
 		if height <= 0.8:
-			return (225, 131, 57) #More Mountainy
+			return C_DRY_MOUNTAIN #More Mountainy
 		if height <= 0.85:
-			return (182, 87, 29) #Most Mountainy
+			return C_DESERT_PEAK #Most Mountainy
 		else:
-			return (230,232,227)
+			return (0,0,0)
 
 def genChunk(x, y):
 	#surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
