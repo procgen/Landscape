@@ -11,7 +11,7 @@ screen = pygame.display.set_mode(size)
 
 #CONSTANTS
 CHUNK_SIZE = 128
-PIXEL_SIZE = 4
+PIXEL_SIZE = 8
 EXITING = False
 MOVE_SPEED = 0.4
 
@@ -22,27 +22,46 @@ chunkLock = threading.Lock()
 
 def getColor(x, y):
 	height = heightMap.octave(x, y, 3, 0.5)
+	humidity = humidityMap.genNoise(x, y)
 
-	if height <= 0.20:
-		return (105,210,231)
-	if height <= 0.34:
-		return (167,219,216)
-	if height <= 0.37:
-		return (224,228,204)
-	if height <= 0.4:
-		return (186,219,129)
-	if height <= 0.6:
-		return (124,197,130)
-	if height <= 0.68:
-		return (62,175,131)
-	if height <= 0.75:
-		return (143,154,156)
-	if height <= 0.8:
-		return (190,195,188)
-	if height <= 0.85:
-		return (215,218,207)
+	if humidity >= 0.5:
+		if height <= 0.20:
+			return (105,210,231) #Deep Water
+		if height <= 0.34:
+			return (167,219,216) #Shallow Water
+		if height <= 0.37:
+			return (224,228,204) #Sand
+		if height <= 0.4:
+			return (186,219,129) #Light Grass
+		if height <= 0.6:
+			return (124,197,130) #Dark Grass
+		if height <= 0.68:
+			return (62,175,131) #Darker Grey
+		if height <= 0.75:
+			return (143,154,156) #Lighter Grey
+		if height <= 0.8:
+			return (190,195,188) #Even Lighter Grey
+		if height <= 0.85:
+			return (215,218,207) #Snow
+		else:
+			return (230,232,227)
 	else:
-		return (230,232,227)
+		if height <= 0.34:
+			return (221,207,161) #Ugly Sand
+		if height <= 0.37:
+			return (236,217,153) #Prettier Sand
+		if height <= 0.55:
+			return (252,225,139) #Nice Sand
+		if height <= 0.68:
+			return (255,207,136) #Hard Sand
+		if height <= 0.75:
+			return (255,178,135) #Mountainy Sand
+		if height <= 0.8:
+			return (225, 131, 57) #More Mountainy
+		if height <= 0.85:
+			return (182, 87, 29) #Most Mountainy
+		else:
+			return (230,232,227)
 
 def genChunk(x, y):
 	#surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
@@ -87,7 +106,7 @@ screenX = 0
 screenY = 0
 
 heightMap = Perlin.Perlin(350)
-humidityMap = Perlin.Perlin(500)
+humidityMap = Perlin.Perlin(1600)
 y = 0
 
 chunkThread = threading.Thread(target=chunkThread)
