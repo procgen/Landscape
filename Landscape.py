@@ -20,7 +20,8 @@ chunkQueue = []
 chunkCond = threading.Condition()
 chunkLock = threading.Lock()
 
-def getColor(height):
+def getColor(x, y):
+	height = perlin.octave(x, y, 3, 0.5)
 	if height <= 0.20:
 		return (105,210,231)
 	if height <= 0.34:
@@ -47,7 +48,7 @@ def genChunk(x, y):
 	pixels = numpy.zeros((CHUNK_SIZE, CHUNK_SIZE))
 	for i in range(CHUNK_SIZE // PIXEL_SIZE):
 		for j in range(CHUNK_SIZE // PIXEL_SIZE):
-			color = getColor(perlin.octave(i * PIXEL_SIZE + x * CHUNK_SIZE, j * PIXEL_SIZE + y * CHUNK_SIZE, 3, 0.5))
+			color = getColor(i * PIXEL_SIZE + x * CHUNK_SIZE, j * PIXEL_SIZE + y * CHUNK_SIZE)
 			colorInt = (color[0] << 16) + (color[1] << 8) + (color[2])
 			for xOffset in range(PIXEL_SIZE):
 				for yOffset in range(PIXEL_SIZE):
