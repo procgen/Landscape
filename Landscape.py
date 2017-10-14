@@ -39,48 +39,36 @@ chunkQueue = []
 chunkCond = threading.Condition()
 chunkLock = threading.Lock()
 
+def colorLerp(color1, color2, by):
+	by = Perlin.fade(by)
+	return(int(Perlin.lerp(color1[0], color2[0], by)),
+		int(Perlin.lerp(color1[1], color2[1], by)),
+		int(Perlin.lerp(color1[2], color2[2], by)))
+
 def getColor(x, y):
 	height = heightMap.octave(x, y, 3, 0.5)
 	humidity = humidityMap.genNoise(x, y)
 
-	if humidity >= 0.5:
-		if height <= 0.20:
-			return C_DEEP_WATER
-		if height <= 0.34:
-			return C_SHALLOW_WATER
-		if height <= 0.37:
-			return C_BEACH
-		if height <= 0.4:
-			return C_LIGHT_GRASS
-		if height <= 0.6:
-			return C_DARK_GRASS
-		if height <= 0.68:
-			return C_DARK_MOUNTAIN
-		if height <= 0.75:
-			return C_GREY_MOUNTAIN
-		if height <= 0.8:
-			return C_LIGHT_MOUNTAIN
-		if height <= 0.85:
-			return C_SNOW
-		else:
-			return (0,0,0)
+	if height <= 0.20:
+		return colorLerp(C_DEEP_SAND, C_DEEP_WATER, humidity)
+	if height <= 0.34:
+		return colorLerp(C_DEEP_SAND, C_SHALLOW_WATER, humidity)
+	if height <= 0.37:
+		return colorLerp(C_UGLY_SAND, C_BEACH, humidity)
+	if height <= 0.4:
+		return colorLerp(C_UGLY_SAND, C_LIGHT_GRASS, humidity)
+	if height <= 0.6:
+		return colorLerp(C_SAND, C_DARK_GRASS, humidity)
+	if height <= 0.68:
+		return colorLerp(C_HARD_SAND, C_DARK_MOUNTAIN, humidity)
+	if height <= 0.75:
+		return colorLerp(C_MOUNTAIN_SAND, C_GREY_MOUNTAIN, humidity)
+	if height <= 0.8:
+		return colorLerp(C_DRY_MOUNTAIN, C_LIGHT_MOUNTAIN, humidity)
+	if height <= 0.85:
+		return colorLerp(C_DESERT_PEAK, C_SNOW, humidity)
 	else:
-		if height <= 0.34:
-			return C_DEEP_SAND #Ugly Sand
-		if height <= 0.37:
-			return C_UGLY_SAND #Prettier Sand
-		if height <= 0.55:
-			return C_SAND #Nice Sand
-		if height <= 0.68:
-			return C_HARD_SAND #Hard Sand
-		if height <= 0.75:
-			return C_MOUNTAIN_SAND #Mountainy Sand
-		if height <= 0.8:
-			return C_DRY_MOUNTAIN #More Mountainy
-		if height <= 0.85:
-			return C_DESERT_PEAK #Most Mountainy
-		else:
-			return (0,0,0)
+		return (0,0,0)
 
 def genChunk(x, y):
 	#surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
