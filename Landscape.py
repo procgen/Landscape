@@ -15,6 +15,10 @@ PIXEL_SIZE = 4
 EXITING = False
 MOVE_SPEED = 0.4
 
+screen.fill((0, 0, 0))
+screenX = 0
+screenY = 0
+
 surfaces = {}
 chunkQueue = []
 chunkCond = threading.Condition()
@@ -84,19 +88,9 @@ def cleanup():
 	chunkCond.release() #just in case
 	chunkThread.join() #make sure it ends before the main thread
 
-screen.fill((0, 0, 0))
-screenX = 0
-screenY = 0
-
-perlin = Perlin.Perlin(350)
-y = 0
-
-chunkThread = threading.Thread(target=chunkThread)
-chunkThread.start()
-
-clock = pygame.time.Clock()
-
-while True:
+def update():
+	global screenX
+	global screenY
 	dt = clock.tick(60)
 
 	for event in pygame.event.get():
@@ -108,7 +102,7 @@ while True:
 
 	if inKeys[pygame.K_ESCAPE]:
 		cleanup()
-		break
+		return False
 	if inKeys[pygame.K_RIGHT]:
 		screenX += math.floor(MOVE_SPEED * dt)
 	if inKeys[pygame.K_LEFT]:
@@ -133,3 +127,15 @@ while True:
 	chunkCond.release()
 	chunkLock.release()
 	pygame.display.flip()
+
+perlin = Perlin.Perlin(350)
+y = 0
+
+chunkThread = threading.Thread(target=chunkThread)
+chunkThread.start()
+
+clock = pygame.time.Clock()
+
+while True:
+	if update() == False:
+		break
