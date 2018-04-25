@@ -25,40 +25,18 @@ class Generator():
 		self.chunkCond = threading.Condition()
 		self.chunkLock = threading.Lock()
 
-		self.perlin = Perlin.Perlin(350)
-		#y = 0
-
 		self.chunkThread = threading.Thread(target=self.chunkThread)
 		self.chunkThread.start()
 
 		self.clock = pygame.time.Clock()
 
-	def getColor(self, height):
-		if height <= 0.20:
-			return (105,210,231)
-		if height <= 0.34:
-			return (167,219,216)
-		if height <= 0.37:
-			return (224,228,204)
-		if height <= 0.4:
-			return (186,219,129)
-		if height <= 0.6:
-			return (124,197,130)
-		if height <= 0.68:
-			return (62,175,131)
-		if height <= 0.75:
-			return (143,154,156)
-		if height <= 0.8:
-			return (190,195,188)
-		if height <= 0.85:
-			return (215,218,207)
-		else:
-			return (230,232,227)
+	def colorToInt(this, color):
+		colorInt = (int(color[0]) << 16) + (int(color[1]) << 8) + (int(color[2]))
+		return colorInt
 
 	def getPixel(self, x, y, i, j):
-		color = self.getColor(self.perlin.octave(i * self.PIXEL_SIZE + x * self.CHUNK_SIZE, j * self.PIXEL_SIZE + y * self.CHUNK_SIZE, 3, 0.5))
-		colorInt = (color[0] << 16) + (color[1] << 8) + (color[2])
-		return colorInt
+		color = (125, 255, 125)
+		return self.colorToInt(color)
 
 	def genChunk(self, x, y):
 		#surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
@@ -134,7 +112,20 @@ class Generator():
 		self.chunkLock.release()
 		pygame.display.flip()
 
-gen = Generator()
+class PerlinGenerator(Generator):
+
+	def __init__(self):
+		super(PerlinGenerator, self).__init__()
+		self.perlin = Perlin.Perlin(350)
+
+	def getColor(self, height):
+		return (int(255 * height), int(255 * height), int(255 * height))
+
+	def getPixel(self, x, y, i, j):
+		color = self.getColor(self.perlin.octave(i * self.PIXEL_SIZE + x * self.CHUNK_SIZE, j * self.PIXEL_SIZE + y * self.CHUNK_SIZE, 3, 0.5))
+		return self.colorToInt(color)
+
+gen = PerlinGenerator()
 
 while True:
 	if gen.update() == False:
