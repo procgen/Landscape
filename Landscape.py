@@ -42,16 +42,20 @@ def getColor(height):
 	else:
 		return (230,232,227)
 
+def getPixel(x, y, i, j):
+	color = getColor(perlin.octave(i * PIXEL_SIZE + x * CHUNK_SIZE, j * PIXEL_SIZE + y * CHUNK_SIZE, 3, 0.5))
+	colorInt = (color[0] << 16) + (color[1] << 8) + (color[2])
+	return colorInt
+
 def genChunk(x, y):
 	#surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
-	pixels = numpy.zeros((CHUNK_SIZE, CHUNK_SIZE))
+	pixels = numpy.zeros((CHUNK_SIZE, CHUNK_SIZE), numpy.int32)
 	for i in range(CHUNK_SIZE // PIXEL_SIZE):
 		for j in range(CHUNK_SIZE // PIXEL_SIZE):
-			color = getColor(perlin.octave(i * PIXEL_SIZE + x * CHUNK_SIZE, j * PIXEL_SIZE + y * CHUNK_SIZE, 3, 0.5))
-			colorInt = (color[0] << 16) + (color[1] << 8) + (color[2])
+			colorInt = getPixel(x, y, i, j)
 			for xOffset in range(PIXEL_SIZE):
 				for yOffset in range(PIXEL_SIZE):
-					pixels[i * PIXEL_SIZE + xOffset, j * PIXEL_SIZE + yOffset] = colorInt
+					pixels[i * PIXEL_SIZE + xOffset, j * PIXEL_SIZE + yOffset] = int(colorInt)
 					#surface.set_at((i * PIXEL_SIZE + xOffset, j * PIXEL_SIZE + yOffset), color)
 	surface = pygame.Surface((128, 128))
 	surfarray.blit_array(surface, pixels)
