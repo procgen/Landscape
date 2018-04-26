@@ -12,7 +12,6 @@ class Generator():
 	size = width, height = 800, 800
 
 	def __init__(self):
-
 		pygame.init()
 		self.screen = pygame.display.set_mode(self.size)
 		self.screen.fill((0, 0, 0))
@@ -39,7 +38,6 @@ class Generator():
 		return self.colorToInt(color)
 
 	def genChunk(self, x, y):
-		#surface = pygame.Surface((CHUNK_SIZE, CHUNK_SIZE))
 		pixels = numpy.zeros((self.CHUNK_SIZE, self.CHUNK_SIZE), numpy.int32)
 		for i in range(self.CHUNK_SIZE // self.PIXEL_SIZE):
 			for j in range(self.CHUNK_SIZE // self.PIXEL_SIZE):
@@ -47,7 +45,6 @@ class Generator():
 				for xOffset in range(self.PIXEL_SIZE):
 					for yOffset in range(self.PIXEL_SIZE):
 						pixels[i * self.PIXEL_SIZE + xOffset, j * self.PIXEL_SIZE + yOffset] = int(colorInt)
-						#surface.set_at((i * PIXEL_SIZE + xOffset, j * PIXEL_SIZE + yOffset), color)
 		surface = pygame.Surface((128, 128))
 		surfarray.blit_array(surface, pixels)
 		return surface
@@ -115,7 +112,7 @@ class Generator():
 class PerlinGenerator(Generator):
 
 	def __init__(self):
-		super(PerlinGenerator, self).__init__()
+		Generator.__init__(self)
 		self.perlin = Perlin.Perlin(350)
 
 	def getColor(self, height):
