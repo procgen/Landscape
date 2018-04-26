@@ -7,6 +7,7 @@ class Generator():
 	#CONSTANTS
 	CHUNK_SIZE = 128
 	PIXEL_SIZE = 4
+	PIXELS = CHUNK_SIZE // PIXEL_SIZE
 	EXITING = False
 	MOVE_SPEED = 0.4
 	size = width, height = 800, 800
@@ -39,8 +40,8 @@ class Generator():
 
 	def genChunk(self, x, y):
 		pixels = numpy.zeros((self.CHUNK_SIZE, self.CHUNK_SIZE), numpy.int32)
-		for i in range(self.CHUNK_SIZE // self.PIXEL_SIZE):
-			for j in range(self.CHUNK_SIZE // self.PIXEL_SIZE):
+		for i in range(self.PIXELS):
+			for j in range(self.PIXELS):
 				colorInt = self.getPixel(x, y, i, j)
 				for xOffset in range(self.PIXEL_SIZE):
 					for yOffset in range(self.PIXEL_SIZE):
