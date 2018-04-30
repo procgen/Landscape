@@ -110,6 +110,12 @@ class Generator():
 		self.chunkLock.release()
 		pygame.display.flip()
 
+	def launch(self):
+		while True:
+			if self.update() == False:
+				break
+
+
 class PerlinGenerator(Generator):
 
 	def __init__(self):
@@ -146,9 +152,3 @@ class LandscapeGenerator(PerlinGenerator):
 			return (215,218,207)
 		else:
 			return (230,232,227)
-
-gen = LandscapeGenerator()
-
-while True:
-	if gen.update() == False:
-		break
